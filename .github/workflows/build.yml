@@ -14,29 +14,5 @@ jobs:
       - uses: AButler/upload-release-assets@v2.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          release-tag: ${{ needs.release-please.outputs.release_tag }}
-          files: .release/devices.tar.gz
+          files: fluent-bit/build/bin/fluent-bit
 
-  release-devices:
-    name: Build and release devices
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "true"
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-unknown-linux-musl
-
-      - uses: Swatinem/rust-cache@v1
-        with:
-          key: devices
-
-      - name: Build devices
-        run: ./build-devices-package.sh
-
-      
