@@ -1,0 +1,42 @@
+name: build
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build.sh
+      - uses: AButler/upload-release-assets@v2.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          release-tag: ${{ needs.release-please.outputs.release_tag }}
+          files: .release/devices.tar.gz
+
+  release-devices:
+    name: Build and release devices
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: "true"
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-musl
+
+      - uses: Swatinem/rust-cache@v1
+        with:
+          key: devices
+
+      - name: Build devices
+        run: ./build-devices-package.sh
+
+      
