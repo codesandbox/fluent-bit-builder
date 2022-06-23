@@ -10,9 +10,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
       - run: ./build.sh
       - uses: AButler/upload-release-assets@v2.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          release-tag: ${{ steps.get_version.outputs.VERSION }}
           files: fluent-bit/build/bin/fluent-bit
 
