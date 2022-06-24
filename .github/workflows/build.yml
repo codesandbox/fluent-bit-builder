@@ -7,7 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ubuntu-21.10, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Get the version
@@ -15,9 +18,10 @@ jobs:
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
       - run: ./build.sh
+      - run: mv fluent-bit/build/bin/fluent-bit fluent-bit/build/bin/fluent-bit-${{ matrix.os }}
       - uses: AButler/upload-release-assets@v2.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           release-tag: ${{ steps.get_version.outputs.VERSION }}
-          files: fluent-bit/build/bin/fluent-bit
+          files: fluent-bit/build/bin/fluent-bit-${{ matrix.os }}
 
