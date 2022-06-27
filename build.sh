@@ -23,8 +23,9 @@ apt-get install -y --no-install-recommends \
 TAG=${GITHUB_REF##*/}
 echo "Cloning fluent bit code"
 git clone https://github.com/fluent/fluent-bit.git
+cd fluent-bit
 git checkout ${TAG:=v1.9.5}
-cd fluent-bit/build
+cd build
 
 echo "Building from source"
 cmake -DFLB_RELEASE=On \
