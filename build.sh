@@ -17,6 +17,7 @@ apt-get install -y --no-install-recommends \
     zlib1g-dev \
     libpq-dev \
     postgresql-server-dev-all \
+    systemd \
     flex \
     bison
 
