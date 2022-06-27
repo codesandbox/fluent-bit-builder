@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [21.10, 22.04]
+        os: ["21.10", "22.04"]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:${{ matrix.os }}
